@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2 } from "lucide-react";
 import Link from "next/link";
+import { DataGridExample } from "@/components/DataGridExample";
 
 export default function Home() {
   return (
@@ -28,9 +29,9 @@ export default function Home() {
                 Get Started <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>
-            <Link href="#">
+            <Link href="/grid_example">
               <Button variant="outline">
-                View Examples <Code2 className="ml-2 size-4" />
+                Grid Example <Code2 className="ml-2 size-4" />
               </Button>
             </Link>
           </div>

@@ -36,3 +36,9 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# vim stuff
+*.swp
+*.swm
+*.swn
+*.swo
