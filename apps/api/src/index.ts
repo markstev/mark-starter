@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 
 import { postRoutes } from "@/modules/posts";
+import { gridRoutes } from "@/modules/grid/grid.routes";
 
 import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
@@ -31,7 +32,8 @@ const routes = app
   .basePath("/api")
   .use("*", errorHandler())
   .route("/webhooks", webhookRoutes)
-  .route("/posts", postRoutes);
+  .route("/posts", postRoutes)
+  .route("/grid", gridRoutes);
 
 export type AppType = typeof routes;
 
