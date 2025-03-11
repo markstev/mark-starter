@@ -1,10 +1,13 @@
 'use client';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useGridData } from '../api/grid.api';
+import { useQuery } from '@tanstack/react-query';
+import { getGridData } from '../api/grid.api';
 
 export function DataGridExample() {
-  const { data: rows, isLoading, error } = useGridData();
-  console.log(rows);
+  const { data: rows, isLoading, error } = useQuery({
+    queryKey: ['grid-data'],
+    queryFn: getGridData
+  });
 
   const columns: GridColDef[] = [
     // Define your columns based on the grid data structure
