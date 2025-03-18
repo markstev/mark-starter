@@ -8,6 +8,9 @@ import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import appRouter from "./core/server";
+
 const app = new Hono();
 
 app.use("*", logger());
@@ -26,6 +29,17 @@ app.use(
 
 app.get("/health", (c) => {
   return c.text("OK");
+});
+
+// Add tRPC handler
+app.all("/trpc/*", async (c) => {
+  const res = await fetchRequestHandler({
+    endpoint: "/trpc",
+    req: c.req.raw,
+    router: appRouter,
+    createContext: () => ({}),
+  });
+  return res;
 });
 
 const routes = app

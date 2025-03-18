@@ -1,7 +1,11 @@
-import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, varchar, boolean } from "drizzle-orm/pg-core";
 import { lifecycleDates } from "./util/lifecycle-dates";
 export const users = pgTable("users", {
   userId: varchar("user_id", { length: 128 }).primaryKey(),
+  tenantId: varchar("tenant_id", { length: 255 })
+    .notNull()
+    .references(() => tenants.id),
+  isSuperUser: boolean("is_super_user").notNull().default(false),
   // Add more clerk fields you want to sync here
   email: text("email").notNull(),
   ...lifecycleDates,
