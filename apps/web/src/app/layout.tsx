@@ -6,6 +6,7 @@ import { geistMono, geistSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/providers/providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TRPCProviderWrapper } from "@/providers/trpc-provider";
 
 import "./globals.css";
 
@@ -28,24 +29,25 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
-      <html suppressHydrationWarning lang="en">
-        <head>{/* <GoogleAnalytics gaId="G-2L23D2FV55" /> */}</head>
-
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            geistMono.variable,
-            geistSans.variable,
-          )}
-        >
-          <Providers attribute="class" defaultTheme="system" enableSystem>
-            {children}
-            <TailwindIndicator />
-            <Toaster />
-          </Providers>
-          <VercelAnalytics />
-        </body>
-      </html>
+      <TRPCProviderWrapper>
+        <html suppressHydrationWarning lang="en">
+          <head />
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              geistMono.variable,
+              geistSans.variable,
+            )}
+          >
+            <Providers attribute="class" defaultTheme="system" enableSystem>
+              {children}
+              <TailwindIndicator />
+              <Toaster />
+            </Providers>
+            <VercelAnalytics />
+          </body>
+        </html>
+      </TRPCProviderWrapper>
     </ClerkProvider>
   );
 }
