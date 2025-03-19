@@ -2,6 +2,8 @@ import { hc } from "hono/client";
 import { HTTPException } from "hono/http-exception";
 import type { AppType } from "../../../api/src";
 import { getToken } from "@/lib/clerk";
+import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import type { AppRouter } from '../../../api/src';
 
 export type { InferRequestType, InferResponseType } from "hono/client";
 
@@ -60,3 +62,15 @@ export const getServerClient = () => {
     },
   }).api;
 };
+
+//     👆 **type-only** import
+ 
+// Pass AppRouter as generic here. 👇 This lets the `trpc` object know
+// what procedures are available on the server and their input/output types.
+export const trpc = createTRPCClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: 'http://localhost:3004/api/trpc',
+    }),
+  ],
+});

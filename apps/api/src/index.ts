@@ -1,5 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { publicProcedure, router } from "./trpc";
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 import { postRoutes } from "@/modules/posts";
 import { gridRoutes } from "@/modules/grid/grid.routes";
@@ -28,6 +30,24 @@ app.get("/health", (c) => {
   return c.text("OK");
 });
 
+
+const appRouter = router({
+  hello: publicProcedure.query(() => {
+    return "Hello, world!";
+  }),
+});
+
+// Move tRPC handler before other routes to ensure it takes precedence
+app.all('/api/trpc/*', async (c) => {
+  const res = await fetchRequestHandler({
+    endpoint: '/api/trpc',
+    req: c.req.raw,
+    router: appRouter,
+    createContext: () => ({}),
+  });
+  return res;
+});
+
 const routes = app
   .basePath("/api")
   .use("*", errorHandler())
@@ -42,3 +62,5 @@ export default {
   fetch: app.fetch,
   idleTimeout: 30,
 };
+
+export type AppRouter = typeof appRouter;
