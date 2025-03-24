@@ -16,3 +16,20 @@ export const posts = pgTable("posts", {
     .references(() => users.userId),
   ...lifecycleDates,
 });
+
+export const tenants = pgTable("tenants", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  ...lifecycleDates,
+});
+
+export const tenantUsers = pgTable("tenant_users", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  tenantId: varchar("tenant_id", { length: 255 })
+    .notNull()
+    .references(() => tenants.id),
+  userId: varchar("user_id", { length: 128 })
+    .notNull()
+    .references(() => users.userId),
+  ...lifecycleDates,
+});

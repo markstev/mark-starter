@@ -9,6 +9,7 @@ import { gridRoutes } from "@/modules/grid/grid.routes";
 import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
+import { tenantsRouter } from "./modules/tenants/tenants.router";
 
 const app = new Hono();
 
@@ -35,9 +36,9 @@ const appRouter = router({
   hello: publicProcedure.query(() => {
     return "Hello, world!";
   }),
+  tenants: tenantsRouter,
 });
 
-// Move tRPC handler before other routes to ensure it takes precedence
 app.all('/api/trpc/*', async (c) => {
   const res = await fetchRequestHandler({
     endpoint: '/api/trpc',

@@ -1,0 +1,30 @@
+import { publicProcedure, router } from "../../trpc";
+import { tenantsService } from "./tenants.service";
+import { z } from "zod";
+
+export const tenantsRouter = router({
+  list: publicProcedure.query(async () => {
+    return tenantsService.list();
+  }),
+
+  create: publicProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ input }) => {
+      return tenantsService.create(input);
+    }),
+
+  update: publicProcedure
+    .input(z.object({
+      id: z.string(),
+      name: z.string().min(1),
+    }))
+    .mutation(async ({ input }) => {
+      return tenantsService.update(input.id, { name: input.name });
+    }),
+
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return tenantsService.delete(input.id);
+    }),
+}); 
