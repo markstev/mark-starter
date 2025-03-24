@@ -8,19 +8,19 @@
     ],
     "paths": {
       "@/*": [
-        "../frontend/src/*",
+        "./src/*",
         "../frontend/src/*"
       ]
     }
   },
   "include": [
-    "../frontend/**/*.ts",
-    "../frontend/**/*.tsx",
-    "../frontend/next-env.d.ts",
-    "../frontend/next.config.js",
-    "../frontend/.next/types/**/*.ts"
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "../frontend/node_modules"
+    "node_modules"
   ]
 }

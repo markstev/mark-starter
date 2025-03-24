@@ -1,9 +1,9 @@
 import { hc } from "hono/client";
 import { HTTPException } from "hono/http-exception";
-import type { AppType } from "../../../api/src";
+import type { AppType } from "..";
 import { getToken } from "@/lib/clerk";
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
-import type { AppRouter } from '../../../api/src';
+import type { AppRouter } from '..';
 
 export type { InferRequestType, InferResponseType } from "hono/client";
 
