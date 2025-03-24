@@ -1,18 +1,12 @@
 "use client";
 
 import { DataGridExample } from "@/components/DataGridExample";
-import { trpc } from "../../api/client";
-import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
 
 export default function GridExamplePage() {
   const trpcClient = useTRPC();
-  const { data } = useQuery(trpcClient.hello.queryOptions({}));
-  //const { data } = trpcClient.hello.useQuery();
-//const { data } = useQuery({
-//  queryKey: ["hello"],
-//  queryFn: () => trpcClient.hello.query(),
-//});
+  const { data } = useQuery(trpcClient.hello.queryOptions());
 
   return (
     <main className="container py-6">
