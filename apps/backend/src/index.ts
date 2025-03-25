@@ -4,7 +4,7 @@ import { publicProcedure, router } from "./trpc";
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 import { postRoutes } from "@/modules/posts";
-import { gridRoutes } from "@/modules/grid/grid.routes";
+import { gridRouter } from "@/modules/grid/grid.routes";
 
 import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
@@ -37,6 +37,7 @@ const appRouter = router({
     return "Hello, world!";
   }),
   tenants: tenantsRouter,
+  grid: gridRouter,
 });
 
 app.all('/api/trpc/*', async (c) => {
@@ -54,7 +55,6 @@ const routes = app
   .use("*", errorHandler())
   .route("/webhooks", webhookRoutes)
   .route("/posts", postRoutes)
-  .route("/grid", gridRoutes);
 
 export type AppType = typeof routes;
 

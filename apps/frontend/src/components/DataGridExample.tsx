@@ -1,13 +1,13 @@
 'use client';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useQuery } from '@tanstack/react-query';
-import { getGridData } from '../api/grid.api';
+import { useTRPC } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
 
 export function DataGridExample() {
-  const { data: rows, isLoading, error } = useQuery({
-    queryKey: ['grid-data'],
-    queryFn: getGridData
-  });
+  const trpcClient = useTRPC();
+  const { data: rows, isLoading, error } = useQuery(
+    trpcClient.grid.list.queryOptions()
+  );
 
   const columns: GridColDef[] = [
     // Define your columns based on the grid data structure
@@ -23,7 +23,7 @@ export function DataGridExample() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
-        rows={rows || []}
+        rows={rows ?? []}
         columns={columns}
         initialState={{
           pagination: {

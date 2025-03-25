@@ -1,10 +1,8 @@
-import { Hono } from "hono";
-import { gridService } from "./grid.service";
+import { publicProcedure, router } from "../../trpc";
+import { gridService, GridRow } from "./grid.service";
 
-const gridRoutes = new Hono()
-  .get("/", async (c) => {
-    const rows = await gridService.getGridData();
-    return c.json(rows);
-  });
-
-export { gridRoutes }; 
+export const gridRouter = router({
+  list: publicProcedure.query(async (): Promise<GridRow[]> => {
+    return gridService.getGridData();
+  }),
+}); 
