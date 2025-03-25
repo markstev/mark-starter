@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2 } from "lucide-react";
 import Link from "next/link";
-import { DataGridExample } from "@/components/DataGridExample";
 
 export default function Home() {
   return (
