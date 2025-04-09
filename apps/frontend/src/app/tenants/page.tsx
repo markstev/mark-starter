@@ -92,7 +92,7 @@ export default function TenantsPage() {
       </div>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={tenants || []}
+          rows={tenants}
           columns={columns}
           initialState={{
             pagination: {

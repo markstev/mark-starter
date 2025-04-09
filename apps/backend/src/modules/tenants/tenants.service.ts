@@ -5,30 +5,54 @@ type NewTenant = typeof tenants.$inferInsert;
 
 export const tenantsService = {
   async list() {
-    return db.select().from(tenants);
+    try {
+      const results = await db.select().from(tenants);
+      return results ?? [];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async create(data: Omit<NewTenant, "id" | "createdAt" | "updatedAt">) {
-    return db
-      .insert(tenants)
-      .values({
-        id: crypto.randomUUID(),
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
+    try {
+      const result = await db
+        .insert(tenants)
+        .values({
+          id: crypto.randomUUID(),
+          ...data,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+      return result[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async update(id: string, data: Partial<NewTenant>) {
-    return db
-      .update(tenants)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(tenants.id, id))
-      .returning();
+    try {
+      const result = await db
+        .update(tenants)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(tenants.id, id))
+        .returning();
+      return result[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async delete(id: string) {
-    return db.delete(tenants).where(eq(tenants.id, id)).returning();
+    try {
+      const result = await db.delete(tenants).where(eq(tenants.id, id)).returning();
+      return result[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 }; 
