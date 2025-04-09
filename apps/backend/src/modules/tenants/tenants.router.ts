@@ -19,9 +19,11 @@ export const tenantsRouter = router({
 
   create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
-    .output(TenantSchema.optional())
+    .output(TenantSchema)
     .mutation(async ({ input }) => {
-      return tenantsService.create(input);
+      const result = await tenantsService.create(input);
+      if (!result) throw new Error('Failed to create tenant');
+      return result;
     }),
 
   update: publicProcedure
@@ -29,15 +31,19 @@ export const tenantsRouter = router({
       id: z.string(),
       name: z.string().min(1),
     }))
-    .output(TenantSchema.optional())
+    .output(TenantSchema)
     .mutation(async ({ input }) => {
-      return tenantsService.update(input.id, { name: input.name });
+      const result = await tenantsService.update(input.id, { name: input.name });
+      if (!result) throw new Error('Failed to update tenant');
+      return result;
     }),
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
-    .output(TenantSchema.optional())
+    .output(TenantSchema)
     .mutation(async ({ input }) => {
-      return tenantsService.delete(input.id);
+      const result = await tenantsService.delete(input.id);
+      if (!result) throw new Error('Failed to delete tenant');
+      return result;
     }),
 }); 
