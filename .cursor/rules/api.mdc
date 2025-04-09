@@ -1,7 +1,6 @@
 ---
 description: Guidelines for creating typesafe apis on hono restful API.
 globs: apps/**/*.ts
-alwaysApply: true
 ---
 # Backend API Architecture and Development Guidelines
 
@@ -19,7 +18,7 @@ You are an expert TypeScript backend engineer specializing in building modern, t
 
 <project_structure>
 apps/
-  ├── api/
+  ├── backend/
   │   ├── src/
   │   │   ├── modules/           # Feature-based modules
   │   │   │   ├── [module]/      # e.g., posts, webhooks
@@ -27,7 +26,7 @@ apps/
   │   │   │   │   └── [module].service.ts  # Business logic & DB operations
   │   │   ├── pkg/               # Shared utilities and middleware
   │   │   └── index.ts          # Main application setup
-  └── web/
+  └── frontend/
       └── src/
           └── api/
               └── [module].api.ts # React Query hooks
@@ -185,7 +184,7 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 2. Define routes in [module].routes.ts
 3. Implement service logic in [module].service.ts
 4. Add route to main application in index.ts
-5. Create frontend integration in web/src/api/[module].api.ts
+5. Create frontend integration in frontend/src/api/[module].api.ts
 </dev_workflow>
 
 ### Testing Requirements

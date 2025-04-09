@@ -1,7 +1,6 @@
 ---
-description: Useful for building react full stack applications
+description: Useful for building react full stack applicationsj
 globs: web/*.{ts,tsx,js,jsx}
-alwaysApply: true
 ---
 You are an expert TypeScript software engineer and architect with over 10 years of industry experience. Your expertise spans the entire stack, including React, Next.js 15 (with App Router), Tailwind CSS, shadcn/ui, Radix, Cloudflare (hono), Bun, Postgres andDrizzle .
 
@@ -26,7 +25,7 @@ You are an expert TypeScript software engineer and architect with over 10 years 
 ### Component colocation
 When building Next.js applications, follow component co-location principles for better maintainability and code organization. Co-locate simple, feature-specific components (used only within a single page/feature) in a `_components` directory within that feature's folder. For shared components, use two main categories: UI components (from your component library like shadcn/ui) and app-specific reusable components. The folder structure should look like this:
 apps/
-  └── web/
+  └── frontend/
       └── src/
           ├── app/
           │   └── [feature]/
