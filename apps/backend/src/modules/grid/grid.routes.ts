@@ -1,8 +1,9 @@
 import { publicProcedure, router } from "../../trpc";
-import { gridService, GridRow } from "./grid.service";
+import { gridService, GridRowSchema } from "./grid.service";
+import { z } from "zod";
 
 export const gridRouter = router({
-  list: publicProcedure.query(async (): Promise<GridRow[]> => {
-    return gridService.getGridData();
-  }),
+  list: publicProcedure
+    .output(z.array(GridRowSchema))
+    .query(() => gridService.getGridData()),
 }); 

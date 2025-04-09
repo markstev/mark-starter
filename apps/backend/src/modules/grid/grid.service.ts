@@ -1,20 +1,19 @@
-interface GridRow {
-  id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
-}
+import { z } from "zod";
+
+export const GridRowSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  age: z.number(),
+});
+
+export type GridRow = z.infer<typeof GridRowSchema>;
 
 export const gridService = {
-  async getGridData(): Promise<GridRow[]> {
-    // This could be replaced with actual database calls later
-    return [
-      { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-      { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-      { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-      { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    ];
+  getGridData(): Promise<GridRow[]> {
+    return Promise.resolve([
+      { id: "1", firstName: "John", lastName: "Doe", age: 25 },
+      { id: "2", firstName: "Jane", lastName: "Smith", age: 30 },
+    ]);
   }
-};
-
-export { type GridRow }; 
+}; 

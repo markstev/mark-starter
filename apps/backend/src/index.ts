@@ -4,7 +4,7 @@ import { publicProcedure, router } from "./trpc";
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 import { postRoutes } from "@/modules/posts";
-import { gridRouter } from "@/modules/grid/grid.routes";
+import { gridRouter } from "./modules/grid/grid.routes";
 
 import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
