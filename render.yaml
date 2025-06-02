@@ -23,5 +23,5 @@ services:
   buildCommand: pnpm install --frozen-lockfile
   startCommand: pnpm start
   healthCheckPath: /health
-  rootDir: apps/api
+  rootDir: apps/backend
 version: "1"

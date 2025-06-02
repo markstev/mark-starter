@@ -6,6 +6,10 @@ import { useState } from 'react';
 import { TRPCProvider } from '../utils/trpc';
 import type { AppRouter } from '../index';
 
+const getBaseUrl = () => {
+  return process.env.NEXT_PUBLIC_API_URL!;
+};
+
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -32,7 +36,7 @@ export function TRPCProviderWrapper({ children }: { children: React.ReactNode })
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: 'http://localhost:3004/api/trpc',
+          url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
     }),

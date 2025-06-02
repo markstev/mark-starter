@@ -70,7 +70,7 @@ export const getServerClient = () => {
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: 'http://localhost:3004/api/trpc',
+      url: `${getBaseUrl()}/api/trpc`,
     }),
   ],
 });
