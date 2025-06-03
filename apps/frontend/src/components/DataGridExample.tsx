@@ -3,6 +3,17 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from 'react';
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader,
+  SidebarProvider,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarFooter
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
 export function DataGridExample() {
   const trpcClient = useTRPC();
@@ -11,11 +22,11 @@ export function DataGridExample() {
   );
 
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleHeaderClick = (columnField: string) => {
     setSelectedColumn(columnField);
-    setIsPanelOpen(true);
+    setSidebarOpen(true);
   };
 
   const createClickableHeader = (field: string) => (params: any) => (
@@ -34,89 +45,74 @@ export function DataGridExample() {
     { field: 'age', headerName: 'Age', type: 'number', width: 90 },
   ];
 
-  const columns: GridColDef[] = baseColumns.map(col => ({
+  const columns = baseColumns.map(col => ({
     ...col,
     renderHeader: createClickableHeader(col.field)
   }));
-
-  const handleClosePanel = () => {
-    setIsPanelOpen(false);
-    setSelectedColumn(null);
-  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading grid data</div>;
 
   return (
-    <div className="relative h-96 w-full">
-      <DataGrid
-        rows={rows ?? []}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-      />
-      
-      {/* Right Panel */}
-      <div
-        className={`fixed top-0 w-96 h-screen bg-white shadow-lg transition-all duration-300 ease-in-out z-[1000] p-5 border-l border-gray-200 overflow-auto ${
-          isPanelOpen ? 'right-0' : '-right-96'
-        }`}
-      >
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="m-0 text-lg font-bold">
-            Column Configuration
-          </h2>
-          <button
-            onClick={handleClosePanel}
-            className="bg-transparent border-none text-xl cursor-pointer p-1 hover:bg-gray-100 rounded"
-          >
-            ×
-          </button>
-        </div>
-        
-        {selectedColumn && (
-          <div>
-            <h3 className="text-base mb-2.5">
-              Selected Column: {selectedColumn}
-            </h3>
-            <div className="mb-4">
-              <h4 className="font-semibold mb-2">Configuration Options</h4>
-              <p className="mb-1">• Column width settings</p>
-              <p className="mb-1">• Sort configuration</p>
-              <p className="mb-1">• Filter options</p>
-              <p className="mb-1">• Display preferences</p>
-            </div>
-            <div className="mb-4">
-              <h4 className="font-semibold mb-2">Column Details</h4>
-              <p className="mb-1">Field: {selectedColumn}</p>
-              <p className="mb-1">Type: {selectedColumn === 'age' ? 'number' : 'string'}</p>
-              <p className="mb-1">Sortable: Yes</p>
-              <p className="mb-1">Filterable: Yes</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">Actions</h4>
-              <button className="mr-2.5 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Hide Column
-              </button>
-              <button className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                Reset Settings
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Overlay */}
-      {isPanelOpen && (
-        <div
-          onClick={handleClosePanel}
-          className="fixed top-0 left-0 w-screen h-screen bg-black opacity-20 z-[999]"
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+      <div className="relative h-96 w-full">
+        <DataGrid
+          rows={rows ?? []}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
         />
-      )}
-    </div>
+
+        <Sidebar side="right" variant="floating">
+          <SidebarHeader>
+            <h2 className="text-lg font-bold">Column Configuration</h2>
+          </SidebarHeader>
+          
+          {selectedColumn && (
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>Selected Column</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  {selectedColumn}
+                </SidebarGroupContent>
+              </SidebarGroup>
+
+              <SidebarGroup>
+                <SidebarGroupLabel>Configuration Options</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <ul className="space-y-1">
+                    <li>• Column width settings</li>
+                    <li>• Sort configuration</li>
+                    <li>• Filter options</li>
+                    <li>• Display preferences</li>
+                  </ul>
+                </SidebarGroupContent>
+              </SidebarGroup>
+
+              <SidebarGroup>
+                <SidebarGroupLabel>Column Details</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <p>Field: {selectedColumn}</p>
+                  <p>Type: {selectedColumn === 'age' ? 'number' : 'string'}</p>
+                  <p>Sortable: Yes</p>
+                  <p>Filterable: Yes</p>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+          )}
+
+          <SidebarFooter>
+            <div className="flex gap-2">
+              <Button variant="destructive" size="sm">Hide Column</Button>
+              <Button variant="secondary" size="sm">Reset Settings</Button>
+            </div>
+          </SidebarFooter>
+        </Sidebar>
+      </div>
+    </SidebarProvider>
   );
 } 
