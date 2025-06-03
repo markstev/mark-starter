@@ -100,6 +100,42 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { PlusIcon, BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -122,7 +158,7 @@ export default function ExamplesPage() {
   }
 
   return (
-    <div className="p-8 space-y-12">
+    <div className="px-16 py-8 max-w-7xl mx-auto space-y-12">
       <section>
         <h2 className="text-2xl font-bold mb-4">Command Menu</h2>
         
@@ -634,6 +670,186 @@ export default function ExamplesPage() {
             ))}
           </div>
         </ScrollArea>
+      </section>
+
+      {/* Select Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Select</h2>
+        <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select a fruit" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="apple">Apple</SelectItem>
+            <SelectItem value="banana">Banana</SelectItem>
+            <SelectItem value="orange">Orange</SelectItem>
+            <SelectItem value="grape">Grape</SelectItem>
+          </SelectContent>
+        </Select>
+      </section>
+
+      {/* Sheet Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Sheet</h2>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline">Open Sheet</Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Edit Profile</SheetTitle>
+              <SheetDescription>
+                Make changes to your profile here. Click save when you're done.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="sheet-name" className="text-right">Name</Label>
+                <Input id="sheet-name" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="sheet-username" className="text-right">Username</Label>
+                <Input id="sheet-username" className="col-span-3" />
+              </div>
+            </div>
+            <SheetFooter>
+              <Button type="submit">Save changes</Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </section>
+
+      {/* Slider Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Slider</h2>
+        <div className="space-y-4">
+          <div>
+            <Label>Single Value</Label>
+            <Slider
+              defaultValue={[33]}
+              max={100}
+              step={1}
+              className="w-[60%]"
+            />
+          </div>
+          <div>
+            <Label>Range</Label>
+            <Slider
+              defaultValue={[25, 75]}
+              max={100}
+              step={1}
+              className="w-[60%]"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Switch Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Switch</h2>
+        <div className="flex items-center space-x-2">
+          <Switch id="airplane-mode" />
+          <Label htmlFor="airplane-mode">Airplane Mode</Label>
+        </div>
+      </section>
+
+      {/* Table Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Table</h2>
+        <Table>
+          <TableCaption>A list of recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Invoice</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>INV001</TableCell>
+              <TableCell>
+                <Badge>Paid</Badge>
+              </TableCell>
+              <TableCell>Credit Card</TableCell>
+              <TableCell className="text-right">$250.00</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>INV002</TableCell>
+              <TableCell>
+                <Badge variant="secondary">Pending</Badge>
+              </TableCell>
+              <TableCell>PayPal</TableCell>
+              <TableCell className="text-right">$150.00</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </section>
+
+      {/* Textarea Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Textarea</h2>
+        <div className="grid w-full gap-1.5">
+          <Label htmlFor="message">Your message</Label>
+          <Textarea
+            placeholder="Type your message here."
+            id="message"
+            className="min-h-[100px]"
+          />
+        </div>
+      </section>
+
+      {/* Toggle Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Toggle</h2>
+        <div className="flex items-center space-x-2">
+          <Toggle aria-label="Toggle bold">
+            <BoldIcon className="h-4 w-4" />
+          </Toggle>
+          <Toggle aria-label="Toggle italic">
+            <ItalicIcon className="h-4 w-4" />
+          </Toggle>
+          <Toggle aria-label="Toggle underline">
+            <UnderlineIcon className="h-4 w-4" />
+          </Toggle>
+        </div>
+        <div className="mt-4">
+          <Toggle variant="outline" aria-label="Toggle italic">
+            <PlusIcon className="mr-2 h-4 w-4" />
+            Add to queue
+          </Toggle>
+        </div>
+      </section>
+
+      {/* Tooltip Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Tooltip</h2>
+        <TooltipProvider>
+          <div className="flex items-center space-x-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <PlusIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add to library</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <BoldIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Make text bold</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </section>
     </div>
   );
