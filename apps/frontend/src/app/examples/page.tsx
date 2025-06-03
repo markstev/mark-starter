@@ -82,6 +82,24 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -465,6 +483,157 @@ export default function ExamplesPage() {
             </div>
           </HoverCardContent>
         </HoverCard>
+      </section>
+
+      {/* Menu Bar Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Menu Bar</h2>
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger>File</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>New Window</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Share</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Print</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Edit</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>Undo</MenubarItem>
+              <MenubarItem>Redo</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Cut</MenubarItem>
+              <MenubarItem>Copy</MenubarItem>
+              <MenubarItem>Paste</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
+      </section>
+
+      {/* Popover Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Popover</h2>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">Open Popover</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none">Dimensions</h4>
+                <p className="text-sm text-muted-foreground">
+                  Set the dimensions for the layer.
+                </p>
+              </div>
+              <div className="grid gap-2">
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <label htmlFor="width">Width</label>
+                  <Input
+                    id="width"
+                    defaultValue="100%"
+                    className="col-span-2 h-8"
+                  />
+                </div>
+                <div className="grid grid-cols-3 items-center gap-4">
+                  <label htmlFor="height">Height</label>
+                  <Input
+                    id="height"
+                    defaultValue="25px"
+                    className="col-span-2 h-8"
+                  />
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </section>
+
+      {/* Progress Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Progress</h2>
+        <div className="space-y-2">
+          <Progress value={33} className="w-[60%]" />
+          <Progress value={66} className="w-[60%]" />
+          <Progress value={100} className="w-[60%]" />
+        </div>
+      </section>
+
+      {/* Tabs Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Tabs</h2>
+        <Tabs defaultValue="account" className="w-[400px]">
+          <TabsList>
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <Card>
+              <CardHeader>
+                <CardTitle>Account</CardTitle>
+                <CardDescription>
+                  Make changes to your account here. Click save when you're done.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" defaultValue="Pedro Duarte" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Username</Label>
+                  <Input id="username" defaultValue="@peduarte" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save changes</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you'll be logged out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="current">Current password</Label>
+                  <Input id="current" type="password" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">New password</Label>
+                  <Input id="new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save password</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </section>
+
+      {/* Scroll Area Example */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Scroll Area</h2>
+        <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium leading-none">Tags</h4>
+            {Array.from({ length: 50 }).map((_, i) => (
+              <div key={i} className="text-sm">
+                Tag {i + 1}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
       </section>
     </div>
   );
