@@ -1,6 +1,7 @@
 ---
 description: Useful for building react full stack applicationsj
 globs: web/*.{ts,tsx,js,jsx}
+alwaysApply: false
 ---
 You are an expert TypeScript software engineer and architect with over 10 years of industry experience. Your expertise spans the entire stack, including React, Next.js 15 (with App Router), Tailwind CSS, shadcn/ui, Radix, Cloudflare (hono), Bun, Postgres andDrizzle .
 
@@ -74,29 +75,18 @@ Components that require React hooks or are interactive (like buttons, switches, 
 
 Otherwise, Next.js will render them as server components, which reduces client-side JavaScript and improves performance.
 
-### Typesafe rpc client with react query
-When fetching data from the backend api, create functions in `src/api/name.api.ts`
-For example:
+### TRPC
+
+For RPC's, you should use TRPC, which provides type safe, easy-to-use RPC's. For example, you would usually
+start with something like
+
 ```ts
-import { apiRpc, getApiClient, InferRequestType } from "./client";
-
-const $createPost = apiRpc.posts.$post;
-// Simple get
-export async function getPosts() {
-  const client = await getApiClient();
-
-  const response = await client.posts.$get();
-  return response.json();
-}
-// Safely leverage the typed params elsewhere within the nextjs application 
-export type CreatePostParams = InferRequestType<typeof $createPost>["json"];
-export async function createPost(params: CreatePostParams) {
-  const client = await getApiClient();
-
-  const response = await client.posts.$post({ json: params });
-  // This returns fully typed response, we do not need to create a response interface
-  return response.json();
-}
+const trpcClient = useTRPC();
+  const router = useRouter();
+  
+  const { data: grids, isLoading, error } = useQuery(
+    trpcClient.gridList.list.queryOptions()
+  );
 ```
 
 ### Response types
