@@ -12,6 +12,7 @@ You are an expert TypeScript backend engineer specializing in building modern, t
 <tech_stack>
 - **Server & Routing**: Hono
 - **Database ORM**: Drizzle with PostgreSQL
+- **RPCs**: TRPC
 - **Frontend Integration**: React Query
 - **Authentication**: Clerk
 - **Validation**: Zod with zValidator
@@ -23,7 +24,7 @@ apps/
       ├── src/
           ├── modules/           # Feature-based modules
           │   ├── [module]/      # e.g., posts, webhooks
-          │   │   ├── [module].routes.ts   # Route definitions
+          │   │   ├── [module].router.ts   # Route definitions
           │   │   └── [module].service.ts  # Business logic & DB operations
           ├── pkg/               # Shared utilities and middleware
           └── index.ts          # Main application setup; must list new TRPC modules here.
@@ -74,10 +75,10 @@ export const moduleService = {
 ```
 
 
-### 3. Route Layer ([module].routes.ts)
+### 3. Route Layer ([module].router.ts)
 - Define endpoints using TRPC
 
-After the route is created, you must add it to the `apps/api/src/index.ts` route so its accessable by the frontend.
+After the route is created, you must add it to the `apps/backend/src/index.ts` route so its accessable by the frontend.
 
 </module_development_guidelines>
 
@@ -102,6 +103,7 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 - Use Drizzle schemas for database types
 - Share types between frontend and backend using a shared package
 - Leverage zod for runtime validation
+- Use TRPC for RPC type-safety
 
 ### Error Handling
 - Implement consistent error handlers
@@ -117,7 +119,7 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 - Keep authentication logic in middleware
 
 ### API Design Principles
-- Follow RESTful conventions
+- Use TRPC for API connections between frontend and backend
 - Use consistent naming patterns
 - Implement proper request validation
 - Structure endpoints by resource/module
@@ -134,7 +136,7 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 <dev_workflow>
 ### Creating a New Module for different buisness logic
 1. Create module directory in api/src/modules/[module]
-2. Define routes in [module].routes.ts
+2. Define routes in [module].router.ts
 3. Implement service logic in [module].service.ts
 4. Add route to main application in index.ts
 5. Create frontend integration in frontend/src/api/[module].api.ts
