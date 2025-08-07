@@ -3,6 +3,13 @@
 A modern full-stack application template built with Turborepo, featuring a Hono + Bun API backend and Next.js frontend.
 Easiest way to build a SaaS.
 
+Includes a variety of base features:
+
+- SSE/sockets
+- TRPC
+- MUI Grid
+- Feature Flags
+
 ### API (Backend)
 
 - [Bun](https://bun.sh/)
