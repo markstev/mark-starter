@@ -16,9 +16,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function DataGridExample() {
-  const trpcClient = useTRPC();
+  const trpc = useTRPC(); // ✅ Fixed: use `trpc` instead of `trpcClient`
   const { data: rows, isLoading, error } = useQuery(
-    trpcClient.grid.list.queryOptions()
+    trpc.grid.list.queryOptions() // ✅ Fixed: use `trpc` instead of `trpcClient`
   );
 
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);

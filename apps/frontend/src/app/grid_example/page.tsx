@@ -5,8 +5,8 @@ import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 
 export default function GridExamplePage() {
-  const trpcClient = useTRPC();
-  const { data } = useQuery(trpcClient.hello.queryOptions());
+  const trpc = useTRPC();
+  const { data } = useQuery(trpc.hello.queryOptions());
 
   return (
     <main className="container py-6">

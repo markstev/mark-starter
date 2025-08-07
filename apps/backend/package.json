@@ -14,12 +14,17 @@
     "@repo/id": "workspace:*",
     "@repo/logs": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/ws": "^8.18.1",
+    "bullmq": "^5.56.9",
     "drizzle-orm": "^0.39.3",
     "hono": "^4",
-    "svix": "^1.59.1",
-    "zod": "^3.24.2",
+    "jose": "^6.0.12",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "superjson": "^2.2.2",
+    "svix": "^1.59.1",
+    "ws": "^8.18.3",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/bun": "latest",

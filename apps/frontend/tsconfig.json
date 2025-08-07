@@ -7,9 +7,24 @@
       }
     ],
     "paths": {
+      "@repo/shared/*": [
+        "../shared/*"
+      ],
       "@/*": [
         "./src/*",
         "../frontend/src/*"
+      ],
+      "@/modules/*": [
+        "../backend/src/modules/*"
+      ],
+      "@/pkg/middleware/*": [
+        "../backend/src/pkg/middleware/*"
+      ],
+      "@/pkg/util/*": [
+        "../backend/src/pkg/util/*"
+      ],
+      "@repo/*": [
+        "../*"
       ]
     }
   },
