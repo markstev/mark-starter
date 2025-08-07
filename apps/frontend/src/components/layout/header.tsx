@@ -18,36 +18,41 @@ export function Header() {
 
   return (
     <header className="relative sticky top-0 z-50 border-b bg-background">
-      <div className="container mx-auto px-4">
+      <div className="w-full px-4">
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-3">
               <Image
-                src="https://placehold.co/40x40"
-                alt="Logo"
-                width={40}
-                height={40}
-                className="h-8 w-auto"
+                src="/globe.svg"
+                alt="App Logo"
+                width={120}
+                height={36}
+                className="h-12 -my-6 w-auto"
               />
-              <span className="font-bold text-xl">Logo</span>
             </Link>
           </div>
-          <nav className="hidden space-x-4 md:flex">
+          <nav className="hidden space-x-6 md:flex">
             <Link
-              href="/about"
-              className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="#features"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors"
             >
-              About
+              Features
             </Link>
             <Link
-              href="/services"
-              className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="#use-cases"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors"
             >
-              Services
+              Use Cases
             </Link>
             <Link
-              href="/contact"
-              className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="#pricing"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="#contact"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors"
             >
               Contact
             </Link>
@@ -99,34 +104,48 @@ export function Header() {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <Link href="/signup" className={buttonVariants({ size: "sm", className: "w-full" })}>
-                Sign up
-              </Link>
               <Link
-                href="/login"
-                className={buttonVariants({ variant: "ghost", size: "sm", className: "w-full" })}
+                href="/signin"
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                onClick={() => setIsMenuOpen(false)}
               >
                 Log in
               </Link>
+              <Link
+                href="/signup"
+                className={buttonVariants({ size: "sm" })}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign up
+              </Link>
             </SignedOut>
           </div>
-
-          <nav className="flex flex-col space-y-4">
+          <nav className="flex flex-col space-y-2">
             <Link
-              href="/about"
-              className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="#features"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors py-2"
+              onClick={() => setIsMenuOpen(false)}
             >
-              About
+              Features
             </Link>
             <Link
-              href="/services"
-              className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="#use-cases"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors py-2"
+              onClick={() => setIsMenuOpen(false)}
             >
-              Services
+              Use Cases
             </Link>
             <Link
-              href="/contact"
-              className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="#pricing"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Pricing
+            </Link>
+            <Link
+              href="#contact"
+              className="font-medium text-muted-foreground text-sm hover:text-primary transition-colors py-2"
+              onClick={() => setIsMenuOpen(false)}
             >
               Contact
             </Link>

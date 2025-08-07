@@ -16,6 +16,7 @@ import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 import { tenantsRouter } from "./modules/tenants/tenants.router";
 import { bullmqRouter } from "./modules/bullmq/bullmq.router";
 import { sseExampleRouter } from "./modules/sse_example/sse_example.router";
+import { featureFlagsRouter } from "./modules/featureFlags/featureFlags.router";
 
 const app = new Hono();
 
@@ -46,6 +47,7 @@ const appRouter = router({
   grid: gridRouter,
   bullmq: bullmqRouter,
   sseExample: sseExampleRouter,
+  featureFlags: featureFlagsRouter,
   // Add a subscription example for WebSocket testing
   randomNumber: publicProcedure.subscription(() => {
     return observable<number>((emit) => {

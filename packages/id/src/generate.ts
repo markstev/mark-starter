@@ -5,6 +5,7 @@ const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
 // Customize the prefixes as needed
 const prefixes = {
   post: "post",
+  featureFlag: "featureFlag",
 } as const;
 
 export function newId<TPrefix extends keyof typeof prefixes>(prefix: TPrefix) {
