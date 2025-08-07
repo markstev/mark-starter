@@ -17,6 +17,8 @@ import { tenantsRouter } from "./modules/tenants/tenants.router";
 import { bullmqRouter } from "./modules/bullmq/bullmq.router";
 import { sseExampleRouter } from "./modules/sse_example/sse_example.router";
 import { featureFlagsRouter } from "./modules/featureFlags/featureFlags.router";
+import { rlsDemoRouter } from "./modules/rls_demo/rlsDemo.router";
+import { authRouter } from "./modules/auth/auth.router";
 
 const app = new Hono();
 
@@ -48,6 +50,8 @@ const appRouter = router({
   bullmq: bullmqRouter,
   sseExample: sseExampleRouter,
   featureFlags: featureFlagsRouter,
+  rlsDemo: rlsDemoRouter,
+  auth: authRouter,
   // Add a subscription example for WebSocket testing
   randomNumber: publicProcedure.subscription(() => {
     return observable<number>((emit) => {

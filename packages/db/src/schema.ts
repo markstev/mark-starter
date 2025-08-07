@@ -60,3 +60,15 @@ export const userFeatureFlags = pgTable("user_feature_flags", {
   index("user_feature_flags_feature_flag_id_idx").on(table.featureFlagId),
   uniqueIndex("user_feature_flags_user_flag_unique").on(table.userId, table.featureFlagId),
 ]);
+
+export const rlsExample = pgTable("rls_example", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  content: text("content").notNull(),
+  userId: varchar("user_id", { length: 128 })
+    .notNull()
+    .references(() => users.userId),
+  publicToken: varchar('public_token', { length: 64 }), // optional view-only access
+  ...lifecycleDates,
+}, (table) => [
+  index("rls_example_public_token_idx").on(table.publicToken),
+]).enableRLS();
