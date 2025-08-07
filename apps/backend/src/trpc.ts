@@ -1,9 +1,5 @@
 import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
-import { isFlagEnabled } from './pkg/util/featureFlags';
-import { getUserId } from './pkg/middleware/clerk-auth';
-import { Context } from 'hono';
-import { TRPCError } from '@trpc/server';
 
 /**
  * Initialization of tRPC backend

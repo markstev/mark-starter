@@ -15,6 +15,7 @@ import { errorHandler } from "@/pkg/middleware/error";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 import { tenantsRouter } from "./modules/tenants/tenants.router";
 import { bullmqRouter } from "./modules/bullmq/bullmq.router";
+import { sseExampleRouter } from "./modules/sse_example/sse_example.router";
 
 const app = new Hono();
 
@@ -44,6 +45,7 @@ const appRouter = router({
   tenants: tenantsRouter,
   grid: gridRouter,
   bullmq: bullmqRouter,
+  sseExample: sseExampleRouter,
   // Add a subscription example for WebSocket testing
   randomNumber: publicProcedure.subscription(() => {
     return observable<number>((emit) => {
@@ -80,7 +82,7 @@ const routes = app
 export type AppType = typeof routes;
 
 // WebSocket server for TRPC subscriptions
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3004;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3005;
 if ((process.env.WS_ENABLED ?? 'false') === 'true') {
   const wss = new WebSocketServer({ port });
   applyWSSHandler({ wss, router: appRouter, createContext: () => ({}) });
