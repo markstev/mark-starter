@@ -5,6 +5,7 @@ const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
 // Customize the prefixes as needed
 const prefixes = {
   post: "post",
+  tenant: "tenant",
   featureFlag: "featureFlag",
   rlsOrgExample: "rlsOrg",
   rlsExample: "rlsExample",

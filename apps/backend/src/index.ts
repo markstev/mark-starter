@@ -20,6 +20,8 @@ import { featureFlagsRouter } from "./modules/featureFlags/featureFlags.router";
 import { rlsDemoRouter } from "./modules/rls_demo/rlsDemo.router";
 import { authRouter } from "./modules/auth/auth.router";
 import { rlsOrgDemoRouter } from "./modules/rls_org_demo/rlsOrgDemo.router";
+import { executeGraphQLQuery, executeGraphQLSubscription } from "./modules/graphql_demo/graphql_demo";
+import { streamText } from 'hono/streaming';
 
 const app = new Hono();
 
@@ -79,6 +81,47 @@ app.all('/api/trpc/*', auth(), async (c: Context) => {
     }),
   });
   return res;
+});
+
+// Add GraphQL endpoint
+app.post('/api/graphql', async (c) => {
+  try {
+    const { query, variables } = await c.req.json();
+    const result = await executeGraphQLQuery(query, variables);
+    return c.json(result);
+  } catch (error) {
+    return c.json({ errors: [{ message: 'GraphQL execution failed', details: error }] }, 500);
+  }
+});
+
+// Add GraphQL subscription endpoint (Server-Sent Events)
+app.get('/api/graphql/stream', async (c) => {
+  const { query, variables } = c.req.query();
+  
+  if (!query) {
+    return c.json({ error: 'Query parameter is required' }, 400);
+  }
+
+  try {
+    const result = await executeGraphQLSubscription(query as string, variables ? JSON.parse(variables as string) : {});
+    
+    if (!result || typeof result[Symbol.asyncIterator] !== 'function') {
+      return c.json({ error: 'Not a subscription query' }, 400);
+    }
+
+    // Set up Server-Sent Events
+    return streamText(c, async (stream) => {
+      try {
+        for await (const value of result as AsyncIterable<any>) {
+          await stream.write(`data: ${JSON.stringify(value)}\n\n`);
+        }
+      } catch (error) {
+        await stream.write(`data: ${JSON.stringify({ errors: [{ message: 'Subscription error', details: error }] })}\n\n`);
+      }
+    });
+  } catch (error) {
+    return c.json({ errors: [{ message: 'Subscription setup failed', details: error }] }, 500);
+  }
 });
 
 const routes = app

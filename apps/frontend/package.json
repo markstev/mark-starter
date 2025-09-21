@@ -12,6 +12,7 @@
     "format": "biome format --write ."
   },
   "dependencies": {
+    "@apollo/client": "^4.0.5",
     "@clerk/clerk-js": "^5.53.0",
     "@clerk/nextjs": "^6.12.0",
     "@clerk/themes": "^2.2.19",
@@ -50,6 +51,7 @@
     "cmdk": "1.0.0",
     "date-fns": "3.0.0",
     "embla-carousel-react": "^8.5.2",
+    "graphql": "^16.11.0",
     "hono": "^4",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.475.0",
