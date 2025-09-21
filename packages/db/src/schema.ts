@@ -72,3 +72,14 @@ export const rlsExample = pgTable("rls_example", {
 }, (table) => [
   index("rls_example_public_token_idx").on(table.publicToken),
 ]).enableRLS();
+
+export const rlsOrgExample = pgTable("rls_org_example", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  content: text("content").notNull(),
+  organizationId: varchar("organization_id", { length: 128 }).notNull(),
+  publicToken: varchar('public_token', { length: 64 }), // optional view-only access
+  ...lifecycleDates,
+}, (table) => [
+  index("rls_org_example_public_token_idx").on(table.publicToken),
+  index("rls_org_example_organization_id_idx").on(table.organizationId),
+]).enableRLS();

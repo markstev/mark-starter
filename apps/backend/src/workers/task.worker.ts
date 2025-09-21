@@ -62,7 +62,7 @@ worker.on("completed", (job: Job) => {
   logger.info(`Job ${job.id} completed successfully`);
 });
 
-worker.on("failed", (job: Job, err: Error) => {
+worker.on("failed", (job?: Job, err?: Error) => {
   logger.error(`Job ${job?.id} failed:`, err);
 });
 

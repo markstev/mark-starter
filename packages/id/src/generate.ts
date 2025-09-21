@@ -6,6 +6,8 @@ const b58 = baseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
 const prefixes = {
   post: "post",
   featureFlag: "featureFlag",
+  rlsOrgExample: "rlsOrg",
+  rlsExample: "rlsExample",
 } as const;
 
 export function newId<TPrefix extends keyof typeof prefixes>(prefix: TPrefix) {

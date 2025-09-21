@@ -17,9 +17,13 @@ async function createRlsExample(data: Omit<NewRlsExample, "id">, userId: string)
   try {
     const result = await rlsClient.transaction(async (tx) => {
       return await tx.insert(rlsExample).values({
-      ...data,
-      id: newId("rlsExample"),
-    }).returning();
+        id: newId("rlsExample"),
+        userId: data.userId,
+        content: data.content,
+        publicToken: data.publicToken,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      }).returning();
     });
     return result[0];
   } catch (error) {

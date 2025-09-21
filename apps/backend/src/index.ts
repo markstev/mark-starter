@@ -19,6 +19,7 @@ import { sseExampleRouter } from "./modules/sse_example/sse_example.router";
 import { featureFlagsRouter } from "./modules/featureFlags/featureFlags.router";
 import { rlsDemoRouter } from "./modules/rls_demo/rlsDemo.router";
 import { authRouter } from "./modules/auth/auth.router";
+import { rlsOrgDemoRouter } from "./modules/rls_org_demo/rlsOrgDemo.router";
 
 const app = new Hono();
 
@@ -51,6 +52,7 @@ const appRouter = router({
   sseExample: sseExampleRouter,
   featureFlags: featureFlagsRouter,
   rlsDemo: rlsDemoRouter,
+  rlsOrgDemo: rlsOrgDemoRouter,
   auth: authRouter,
   // Add a subscription example for WebSocket testing
   randomNumber: publicProcedure.subscription(() => {
@@ -82,7 +84,7 @@ app.all('/api/trpc/*', auth(), async (c: Context) => {
 const routes = app
   .basePath("/api")
   .use("*", errorHandler())
-  .route("/webhooks", webhookRoutes)
+  .route("/webhook", webhookRoutes)
   .route("/posts", postRoutes)
 
 export type AppType = typeof routes;

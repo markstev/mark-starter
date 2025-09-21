@@ -27,6 +27,17 @@ export const getUserId = (c: Context) => {
   return auth.userId;
 };
 
+export const getUserAndOrgId = (c: Context) => {
+  const auth = getAuth(c);
+  if (!auth?.userId) {
+    throw new Error("Unauthorized");
+  }
+  return {
+    userId: auth.userId,
+    orgId: auth.orgId || null,
+  };
+};
+
 type ClerkEnv = {
   CLERK_SECRET_KEY: string;
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
