@@ -1,0 +1,27 @@
+---
+description: How to add RLS policies for a database table
+globs: *.ts
+alwaysApply: false
+---
+
+To add RLS, we need to create a SQL file detailing the row-level-security application.
+The database is postgres, running on supabase.
+
+It should look similar to:
+
+-- Policy for labels table
+CREATE POLICY "labels_tenant_isolation_policy" ON "labels"
+FOR ALL
+USING (
+"organization_id" = current_setting('request.jwt.claim.org_id', true)::text
+)
+WITH CHECK (
+"organization_id" = current_setting('request.jwt.claim.org_id', true)::text
+);
+
+Unless otherwise specified, we should apply policies in this way -- "FOR ALL" and
+requiring an organization_id.
+
+The migration should be in a new file in the folder packages/db/drizzle
+
+Then, add the migration to the list in packages/db/drizzle/meta/\_journal.json
