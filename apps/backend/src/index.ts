@@ -21,6 +21,8 @@ import { rlsDemoRouter } from "./modules/rls_demo/rlsDemo.router";
 import { authRouter } from "./modules/auth/auth.router";
 import { rlsOrgDemoRouter } from "./modules/rls_org_demo/rlsOrgDemo.router";
 import { executeGraphQLQuery, executeGraphQLSubscription } from "./modules/graphql_demo/graphql_demo";
+import { executeRlsExampleGraphQLQuery, executeRlsExampleGraphQLSubscription } from "./modules/graphql_demo/rls_demo";
+import { getUserId } from "./pkg/middleware/clerk-auth";
 import { streamText } from 'hono/streaming';
 
 const app = new Hono();
@@ -94,8 +96,24 @@ app.post('/api/graphql', async (c) => {
   }
 });
 
-// Add GraphQL subscription endpoint (Server-Sent Events)
-app.get('/api/graphql/stream', async (c) => {
+// Add RLS Example GraphQL endpoint with authentication
+app.post('/api/graphql/rls', auth(), async (c) => {
+  try {
+    console.log('RLS Example GraphQL endpoint hit');
+    const { query, variables } = await c.req.json();
+    console.log('Query:', query, c.get("clerkAuth"));
+    const userId = getUserId(c);
+    console.log('User ID:', userId);
+    const result = await executeRlsExampleGraphQLQuery(query, variables, userId);
+    console.log('Result:', result);
+    return c.json(result);
+  } catch (error) {
+    return c.json({ errors: [{ message: 'RLS GraphQL execution failed', details: error }] }, 500);
+  }
+});
+
+// Add RLS Example GraphQL subscription endpoint (Server-Sent Events)
+app.get('/api/graphql/rls/stream', auth(), async (c) => {
   const { query, variables } = c.req.query();
   
   if (!query) {

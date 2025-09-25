@@ -297,8 +297,8 @@ const rootValue = {
   },
 };
 
-// GraphQL execution functions
-export const executeGraphQLQuery = async (query: string, variables?: any) => {
+// GraphQL execution functions - Updated to accept userId
+export const executeGraphQLQuery = async (query: string, variables?: any, userId?: string) => {
   const document = parse(query);
   return await execute({
     schema,
@@ -308,7 +308,7 @@ export const executeGraphQLQuery = async (query: string, variables?: any) => {
   });
 };
 
-export const executeGraphQLSubscription = async (query: string, variables?: any) => {
+export const executeGraphQLSubscription = async (query: string, variables?: any, userId?: string) => {
   const document = parse(query);
   return await subscribe({
     schema,

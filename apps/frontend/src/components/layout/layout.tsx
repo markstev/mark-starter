@@ -13,7 +13,7 @@ export function Layout({ children, showLeftNav = true }: LayoutProps) {
   return (
     <div className="h-screen bg-background flex flex-col">
       <Header />
-      <div className="h-full flex flex-1 pb-8 overflow-hidden">
+      <div className="h-full flex flex-1 pb-8 overflow-auto">
         {showLeftNav && <LeftNav />}
         <main 
           className={cn(

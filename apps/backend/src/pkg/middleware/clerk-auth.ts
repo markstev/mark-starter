@@ -15,7 +15,6 @@ declare module "hono" {
 
 export const getAuth = (c: Context) => {
   const clerkAuth = c.get("clerkAuth");
-
   return clerkAuth;
 };
 
