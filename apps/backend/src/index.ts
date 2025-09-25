@@ -99,13 +99,9 @@ app.post('/api/graphql', async (c) => {
 // Add RLS Example GraphQL endpoint with authentication
 app.post('/api/graphql/rls', auth(), async (c) => {
   try {
-    console.log('RLS Example GraphQL endpoint hit');
     const { query, variables } = await c.req.json();
-    console.log('Query:', query, c.get("clerkAuth"));
     const userId = getUserId(c);
-    console.log('User ID:', userId);
     const result = await executeRlsExampleGraphQLQuery(query, variables, userId);
-    console.log('Result:', result);
     return c.json(result);
   } catch (error) {
     return c.json({ errors: [{ message: 'RLS GraphQL execution failed', details: error }] }, 500);

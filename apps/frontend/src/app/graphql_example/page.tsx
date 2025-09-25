@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getToken } from '@/lib/clerk';
+import { MostBasicElement, TimingCard } from '@/components/perf/timing';
 
 // TypeScript Types for GraphQL Responses
 interface Post {
@@ -371,6 +372,18 @@ export default function GraphQLExamplePage() {
   const isLoading = postsLoading || tenantsLoading;
   const hasError = postsError || tenantsError;
 
+  // return (<div>
+  //     <TimingCard name="RLS Examples List">
+  //       <RlsExampleSection />
+  //     </TimingCard>
+  //     <TimingCard name="RLS Examples List (No Transaction)">
+  //       <RlsExampleSection withoutTransaction />
+  //     </TimingCard>
+  //     <TimingCard name="Most Basic Element">
+  //       <MostBasicElement />
+  //     </TimingCard>
+  //   </div>);
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="text-center">
@@ -611,13 +624,21 @@ export default function GraphQLExamplePage() {
       </Card>
 
       {/* Add RLS Example Section */}
-      <RlsExampleSection />
+      <TimingCard name="RLS Examples List">
+        <RlsExampleSection />
+      </TimingCard>
+      <TimingCard name="RLS Examples List (No Transaction)">
+        <RlsExampleSection withoutTransaction />
+      </TimingCard>
+      <TimingCard name="Most Basic Element">
+        <MostBasicElement />
+      </TimingCard>
     </div>
   );
 }
 
 // Add RLS Example section after the existing content
-const RlsExampleSection = () => {
+const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void, withoutTransaction?: boolean }) => {
   const [rlsExamples, setRlsExamples] = useState<RlsExample[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -626,7 +647,37 @@ const RlsExampleSection = () => {
   const [editingContent, setEditingContent] = useState('');
 
   // Fetch RLS examples
-  const fetchRlsExamples = async () => {
+  const fetchRlsExamples = withoutTransaction ?
+  async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rlsGraphQLClient.query<{ getRlsExamplesNoTransaction: RlsExample[] }>(`
+        query {
+          getRlsExamplesNoTransaction {
+            id
+            content
+            userId
+            publicToken
+            createdAt
+            updatedAt
+          }
+        }
+      `);
+      
+      if (response.errors) {
+        throw new Error(response.errors[0]?.message || 'Failed to fetch RLS examples');
+      }
+      
+      setRlsExamples(response.data.getRlsExamplesNoTransaction);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch RLS examples');
+    } finally {
+      setLoading(false);
+      onDone?.();
+    }
+  } :
+  async () => {
     setLoading(true);
     setError(null);
     try {
@@ -652,6 +703,7 @@ const RlsExampleSection = () => {
       setError(err instanceof Error ? err.message : 'Failed to fetch RLS examples');
     } finally {
       setLoading(false);
+      onDone?.();
     }
   };
 

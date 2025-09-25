@@ -2,7 +2,7 @@ import { buildSchema, execute, parse, subscribe } from 'graphql';
 import { rlsExample } from '@repo/db';
 import { eq, and } from 'drizzle-orm';
 import { newId } from '@repo/id';
-import { createRLSClient } from '@repo/db/src/client';
+import { createRLSClient, db } from '@repo/db/src/client';
 
 // GraphQL Schema Definition for RLS Example
 const rlsExampleSchema = buildSchema(`
@@ -17,6 +17,7 @@ const rlsExampleSchema = buildSchema(`
 
   type Query {
     getRlsExamples: [RlsExample!]!
+    getRlsExamplesNoTransaction: [RlsExample!]!
     getRlsExample(id: String!): RlsExample
   }
 
@@ -47,6 +48,20 @@ export const createRlsExampleResolvers = (userId: string) => ({
       }));
     } catch (error) {
       throw new Error('Failed to fetch RLS examples');
+    }
+  },
+
+  getRlsExamplesNoTransaction: async () => {
+    try {
+        const results = await db.select().from(rlsExample).where(eq(rlsExample.userId, userId));
+        console.log("no transaction results", results);
+        return results.map(example => ({
+            ...example,
+            createdAt: example.createdAt.toISOString(),
+            updatedAt: example.updatedAt?.toISOString() || null,
+        }));
+    } catch (error) {
+        throw new Error('Failed to fetch RLS exmaples');
     }
   },
 
