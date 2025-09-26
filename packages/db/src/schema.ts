@@ -70,7 +70,23 @@ export const rlsExample = pgTable("rls_example", {
   publicToken: varchar('public_token', { length: 64 }), // optional view-only access
   ...lifecycleDates,
 }, (table) => [
+  index("rls_example_user_id_idx").on(table.userId),
   index("rls_example_public_token_idx").on(table.publicToken),
+]).enableRLS();
+
+export const rlsComment = pgTable("rls_comment", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  parentExampleId: varchar("parent_example_id", { length: 255 })
+    .notNull()
+    .references(() => rlsExample.id),
+  text: text("text").notNull(),
+  userId: varchar("user_id", { length: 128 })
+    .notNull()
+    .references(() => users.userId),
+  ...lifecycleDates,
+}, (table) => [
+  index("rls_comment_user_id_idx").on(table.userId),
+  index("rls_comment_parent_example_id_idx").on(table.parentExampleId),
 ]).enableRLS();
 
 export const rlsOrgExample = pgTable("rls_org_example", {
