@@ -147,3 +147,8 @@ This will start both the API and web applications in development mode:
 1. Create a new branch
 2. Make your changes
 3. Submit a pull request
+
+## To start fresh with a new db:
+
+- update the apps/backend/.env and packages/db/.env
+- delete drizzle/meta snapshots
