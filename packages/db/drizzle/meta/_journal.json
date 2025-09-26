@@ -43,13 +43,6 @@
       "when": 1754587452655,
       "tag": "0005_misty_iron_patriot",
       "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1758836440228,
-      "tag": "0006_mysterious_changeling",
-      "breakpoints": true
     }
   ]
 }
