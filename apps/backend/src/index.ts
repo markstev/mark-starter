@@ -141,7 +141,7 @@ app.get('/api/graphql/rls/stream', auth(), async (c) => {
 const routes = app
   .basePath("/api")
   .use("*", errorHandler())
-  .route("/webhook", webhookRoutes)
+  .route("/webhooks", webhookRoutes)
   .route("/posts", postRoutes)
 
 export type AppType = typeof routes;

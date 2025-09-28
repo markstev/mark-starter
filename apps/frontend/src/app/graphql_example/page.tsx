@@ -83,6 +83,15 @@ class GraphQLClient {
 const client = new GraphQLClient('http://localhost:3004/api/graphql');
 
 // Add RLS Example types
+interface RlsComment {
+  id: string;
+  text: string;
+  userId: string;
+  parentExampleId: string;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
 interface RlsExample {
   id: string;
   content: string;
@@ -90,6 +99,7 @@ interface RlsExample {
   publicToken: string | null;
   createdAt: string;
   updatedAt: string | null;
+  comments: RlsComment[];
 }
 
 // GraphQL Queries and Mutations with proper typing
@@ -165,6 +175,52 @@ const PROCESS_ORDER_MUTATION = `
   }
 `;
 
+// RLS Comment GraphQL queries and mutations
+const GET_RLS_COMMENTS_QUERY = `
+  query GetRlsComments($parentExampleId: String!) {
+    getRlsComments(parentExampleId: $parentExampleId) {
+      id
+      text
+      userId
+      parentExampleId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const CREATE_RLS_COMMENT_MUTATION = `
+  mutation CreateRlsComment($parentExampleId: String!, $text: String!) {
+    createRlsComment(parentExampleId: $parentExampleId, text: $text) {
+      id
+      text
+      userId
+      parentExampleId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const UPDATE_RLS_COMMENT_MUTATION = `
+  mutation UpdateRlsComment($id: String!, $text: String!) {
+    updateRlsComment(id: $id, text: $text) {
+      id
+      text
+      userId
+      parentExampleId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const DELETE_RLS_COMMENT_MUTATION = `
+  mutation DeleteRlsComment($id: String!) {
+    deleteRlsComment(id: $id)
+  }
+`;
+
 // Type definitions for GraphQL responses
 interface GetPostsResponse {
   getPosts: Post[];
@@ -196,6 +252,22 @@ interface CalculateAreaResponse {
 
 interface ProcessOrderResponse {
   processOrder: string;
+}
+
+interface GetRlsCommentsResponse {
+  getRlsComments: RlsComment[];
+}
+
+interface CreateRlsCommentResponse {
+  createRlsComment: RlsComment;
+}
+
+interface UpdateRlsCommentResponse {
+  updateRlsComment: RlsComment;
+}
+
+interface DeleteRlsCommentResponse {
+  deleteRlsComment: boolean;
 }
 
 interface RPCResults {
@@ -627,9 +699,9 @@ export default function GraphQLExamplePage() {
       <TimingCard name="RLS Examples List">
         <RlsExampleSection />
       </TimingCard>
-      <TimingCard name="RLS Examples List (No Transaction)">
+      {/* <TimingCard name="RLS Examples List (No Transaction)">
         <RlsExampleSection withoutTransaction />
-      </TimingCard>
+      </TimingCard> */}
       <TimingCard name="Most Basic Element">
         <MostBasicElement />
       </TimingCard>
@@ -645,6 +717,11 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
   const [newContent, setNewContent] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState('');
+  
+  // Comment state
+  const [newCommentText, setNewCommentText] = useState<{ [exampleId: string]: string }>({});
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingCommentText, setEditingCommentText] = useState('');
 
   // Fetch RLS examples
   const fetchRlsExamples = withoutTransaction ?
@@ -661,6 +738,14 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
             publicToken
             createdAt
             updatedAt
+            comments {
+              id
+              text
+              userId
+              parentExampleId
+              createdAt
+              updatedAt
+            }
           }
         }
       `);
@@ -690,6 +775,14 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
             publicToken
             createdAt
             updatedAt
+            comments {
+              id
+              text
+              userId
+              parentExampleId
+              createdAt
+              updatedAt
+            }
           }
         }
       `);
@@ -723,6 +816,14 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
             publicToken
             createdAt
             updatedAt
+            comments {
+              id
+              text
+              userId
+              parentExampleId
+              createdAt
+              updatedAt
+            }
           }
         }
       `, { content: newContent });
@@ -756,6 +857,14 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
             publicToken
             createdAt
             updatedAt
+            comments {
+              id
+              text
+              userId
+              parentExampleId
+              createdAt
+              updatedAt
+            }
           }
         }
       `, { id, content: editingContent });
@@ -803,6 +912,115 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
     }
   };
 
+  // Comment functions
+  const createComment = async (exampleId: string) => {
+    const text = newCommentText[exampleId];
+    if (!text?.trim()) return;
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rlsGraphQLClient.query<CreateRlsCommentResponse>(`
+        mutation CreateRlsComment($parentExampleId: String!, $text: String!) {
+          createRlsComment(parentExampleId: $parentExampleId, text: $text) {
+            id
+            text
+            userId
+            parentExampleId
+            createdAt
+            updatedAt
+          }
+        }
+      `, { parentExampleId: exampleId, text });
+      
+      if (response.errors) {
+        throw new Error(response.errors[0]?.message || 'Failed to create comment');
+      }
+      
+      setRlsExamples(prev => 
+        prev.map(example => 
+          example.id === exampleId 
+            ? { ...example, comments: [...example.comments, response.data.createRlsComment] }
+            : example
+        )
+      );
+      setNewCommentText(prev => ({ ...prev, [exampleId]: '' }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create comment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateComment = async (commentId: string) => {
+    if (!editingCommentText.trim()) return;
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rlsGraphQLClient.query<UpdateRlsCommentResponse>(`
+        mutation UpdateRlsComment($id: String!, $text: String!) {
+          updateRlsComment(id: $id, text: $text) {
+            id
+            text
+            userId
+            parentExampleId
+            createdAt
+            updatedAt
+          }
+        }
+      `, { id: commentId, text: editingCommentText });
+      
+      if (response.errors) {
+        throw new Error(response.errors[0]?.message || 'Failed to update comment');
+      }
+      
+      setRlsExamples(prev => 
+        prev.map(example => ({
+          ...example,
+          comments: example.comments.map(comment => 
+            comment.id === commentId ? response.data.updateRlsComment : comment
+          )
+        }))
+      );
+      setEditingCommentId(null);
+      setEditingCommentText('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update comment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteComment = async (commentId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rlsGraphQLClient.query<DeleteRlsCommentResponse>(`
+        mutation DeleteRlsComment($id: String!) {
+          deleteRlsComment(id: $id)
+        }
+      `, { id: commentId });
+      
+      if (response.errors) {
+        throw new Error(response.errors[0]?.message || 'Failed to delete comment');
+      }
+      
+      if (response.data.deleteRlsComment) {
+        setRlsExamples(prev => 
+          prev.map(example => ({
+            ...example,
+            comments: example.comments.filter(comment => comment.id !== commentId)
+          }))
+        );
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete comment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchRlsExamples();
   }, []);
@@ -845,9 +1063,9 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
         )}
 
         {/* RLS Examples List */}
-        <div className="space-y-2">
+        <div className="space-y-4">
           {rlsExamples.map((example) => (
-            <div key={example.id} className="p-3 border rounded-md">
+            <div key={example.id} className="p-4 border rounded-md">
               {editingId === example.id ? (
                 <div className="flex gap-2">
                   <Input
@@ -874,37 +1092,135 @@ const RlsExampleSection = ({ onDone, withoutTransaction }: { onDone?: () => void
                   </Button>
                 </div>
               ) : (
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <p className="text-sm">{example.content}</p>
-                    <div className="flex gap-2 mt-1">
-                      <Badge variant="secondary" className="text-xs">
-                        {example.id}
-                      </Badge>
-                      <span className="text-xs text-gray-500">
-                        {new Date(example.createdAt).toLocaleString()}
-                      </span>
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{example.content}</p>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="secondary" className="text-xs">
+                          {example.id}
+                        </Badge>
+                        <span className="text-xs text-gray-500">
+                          {new Date(example.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingId(example.id);
+                          setEditingContent(example.content);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => deleteRlsExample(example.id)}
+                        disabled={loading}
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setEditingId(example.id);
-                        setEditingContent(example.content);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => deleteRlsExample(example.id)}
-                      disabled={loading}
-                    >
-                      Delete
-                    </Button>
+
+                  {/* Comments Section */}
+                  <div className="border-t pt-3">
+                    <h4 className="text-sm font-medium mb-2">Comments ({example.comments.length})</h4>
+                    
+                    {/* Add Comment Form */}
+                    <div className="flex gap-2 mb-3">
+                      <Input
+                        placeholder="Add a comment..."
+                        value={newCommentText[example.id] || ''}
+                        onChange={(e) => setNewCommentText(prev => ({ ...prev, [example.id]: e.target.value }))}
+                        onKeyPress={(e) => e.key === 'Enter' && createComment(example.id)}
+                        className="flex-1"
+                      />
+                      <Button 
+                        size="sm" 
+                        onClick={() => createComment(example.id)}
+                        disabled={loading || !newCommentText[example.id]?.trim()}
+                      >
+                        Add
+                      </Button>
+                    </div>
+
+                    {/* Comments List */}
+                    <div className="space-y-2">
+                      {example.comments.map((comment) => (
+                        <div key={comment.id} className="p-2 bg-gray-50 rounded text-sm">
+                          {editingCommentId === comment.id ? (
+                            <div className="flex gap-2">
+                              <Input
+                                value={editingCommentText}
+                                onChange={(e) => setEditingCommentText(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && updateComment(comment.id)}
+                                className="flex-1"
+                              />
+                              <Button 
+                                size="sm" 
+                                onClick={() => updateComment(comment.id)}
+                                disabled={loading || !editingCommentText.trim()}
+                              >
+                                Save
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={() => {
+                                  setEditingCommentId(null);
+                                  setEditingCommentText('');
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <p className="text-sm">{comment.text}</p>
+                                <div className="flex gap-2 mt-1">
+                                  <Badge variant="outline" className="text-xs">
+                                    {comment.id}
+                                  </Badge>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(comment.createdAt).toLocaleString()}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => {
+                                    setEditingCommentId(comment.id);
+                                    setEditingCommentText(comment.text);
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => deleteComment(comment.id)}
+                                  disabled={loading}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {example.comments.length === 0 && (
+                      <p className="text-xs text-gray-500 italic">No comments yet. Add one above!</p>
+                    )}
                   </div>
                 </div>
               )}

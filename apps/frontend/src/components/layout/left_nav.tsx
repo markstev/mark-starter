@@ -14,6 +14,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ClipboardListIcon,
+  ReplyIcon,
   FileCheckIcon,
   TableIcon,
   GridIcon
@@ -47,6 +48,12 @@ const navItems: NavItem[] = [
     href: "/sse_demo",
     icon: ClipboardListIcon,
     description: "SSE Demo"
+  },
+  {
+    title: "GraphQL Demo",
+    href: "/graphql_example",
+    icon: ReplyIcon,
+    description: "GraphQL Demo"
   },
   {
     title: "Users",

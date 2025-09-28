@@ -9,6 +9,7 @@ const prefixes = {
   featureFlag: "featureFlag",
   rlsOrgExample: "rlsOrg",
   rlsExample: "rlsExample",
+  rlsComment: "rlsComment",
 } as const;
 
 export function newId<TPrefix extends keyof typeof prefixes>(prefix: TPrefix) {

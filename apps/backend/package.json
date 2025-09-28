@@ -17,6 +17,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/ws": "^8.18.1",
     "bullmq": "^5.56.9",
+    "dataloader": "^2.2.3",
     "drizzle-orm": "^0.39.3",
     "graphql": "^16.11.0",
     "hono": "^4",

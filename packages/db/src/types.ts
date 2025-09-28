@@ -21,3 +21,10 @@ export type NewRlsOrgExample = InferInsertModel<typeof schema.rlsOrgExample>;
 
 export const rlsOrgExampleInsertSchema = createInsertSchema(schema.rlsOrgExample).omit({ organizationId: true });
 export const rlsOrgExampleSelectSchema = createSelectSchema(schema.rlsOrgExample);
+
+// RLS Comment types
+export type RlsComment = InferSelectModel<typeof schema.rlsComment>;
+export type NewRlsComment = InferInsertModel<typeof schema.rlsComment>;
+
+export const rlsCommentInsertSchema = createInsertSchema(schema.rlsComment).omit({ userId: true });
+export const rlsCommentSelectSchema = createSelectSchema(schema.rlsComment);
