@@ -17,7 +17,8 @@ import {
   ReplyIcon,
   FileCheckIcon,
   TableIcon,
-  GridIcon
+  GridIcon,
+  FlagIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
@@ -54,6 +55,12 @@ const navItems: NavItem[] = [
     href: "/graphql_example",
     icon: ReplyIcon,
     description: "GraphQL Demo"
+  },
+  {
+    title: "Flags",
+    href: "/flags",
+    icon: FlagIcon,
+    description: "Feature Flags"
   },
   {
     title: "Users",

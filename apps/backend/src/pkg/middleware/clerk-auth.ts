@@ -37,6 +37,14 @@ export const getUserAndOrgId = (c: Context) => {
   };
 };
 
+export const getUserAndOrgIdOrNull = (c: Context) => {
+  const auth = getAuth(c);
+  return {
+    userId: auth?.userId || null,
+    orgId: auth?.orgId || null,
+  };
+};
+
 type ClerkEnv = {
   CLERK_SECRET_KEY: string;
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
@@ -100,4 +108,52 @@ export const requireAuth: MiddlewareHandler = async (c, next) => {
     return c.text("Unauthorized", 401);
   }
   await next();
+};
+
+export const requireStaffAdmin: MiddlewareHandler = async (c, next) => {
+  const auth = getAuth(c);
+  if (!auth?.userId) {
+    return c.text("Unauthorized", 401);
+  }
+
+  // Get the clerk client to fetch user data
+  const clerkClient = c.get("clerk");
+  if (!clerkClient) {
+    return c.text("Internal Server Error", 500);
+  }
+
+  try {
+    const user = await clerkClient.users.getUser(auth.userId);
+    const isStaffAdmin = user.publicMetadata?.is_staff_admin === true;
+    
+    if (!isStaffAdmin) {
+      return c.text("Forbidden: Staff admin access required", 403);
+    }
+  } catch (error) {
+    console.error("Error checking staff admin status:", error);
+    return c.text("Internal Server Error", 500);
+  }
+
+  await next();
+};
+
+// Helper function to check if user is staff admin (for use in TRPC procedures)
+export const isStaffAdmin = async (c: Context): Promise<boolean> => {
+  const auth = getAuth(c);
+  if (!auth?.userId) {
+    return false;
+  }
+
+  const clerkClient = c.get("clerk");
+  if (!clerkClient) {
+    return false;
+  }
+
+  try {
+    const user = await clerkClient.users.getUser(auth.userId);
+    return user.publicMetadata?.is_staff_admin === true;
+  } catch (error) {
+    console.error("Error checking staff admin status:", error);
+    return false;
+  }
 };

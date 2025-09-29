@@ -1,0 +1,46 @@
+---
+description: How to implement tRPC endpoints
+alwaysApply: false
+---
+
+TRPC has some specific syntax to follow for both frontend/client and backend/api:
+
+1. Client Example:
+
+const trpc = useTRPC();
+const queryClient = useQueryClient();
+
+// A readonly query
+const { data: tasks = [], isLoading, refetch } = useQuery(trpc.bullmq.listTasks.queryOptions({ limit: 50, offset: 0 }));
+
+// A mutation
+const createMutation = useMutation({
+...trpc.tenants.create.mutationOptions(),
+onSuccess: () => {
+queryClient.invalidateQueries({ queryKey: trpc.tenants.list.queryKey() });
+}
+});
+
+const createTenant = () => createMutation.mutate({ name: "New Tenant" });
+
+2. Backend Example:
+
+   export const tenantsRouter = router({
+   list: publicProcedure
+   .output(z.array(TenantSchema))
+   .query(async () => {
+   return tenantsService.list();
+   }),
+
+   create: publicProcedure
+   .input(z.object({ name: z.string().min(1) }))
+   .output(TenantSchema)
+   .mutation(async ({ input }) => {
+   const result = await tenantsService.create(input);
+   if (!result) throw new Error('Failed to create tenant');
+   return result;
+   }),
+   });
+
+3. (optional) A service file, not TRPC-specific, but separates more complicated database/etc
+   logic away from TRPC mechanics
