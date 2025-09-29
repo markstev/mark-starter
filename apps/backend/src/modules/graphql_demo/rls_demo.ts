@@ -56,10 +56,9 @@ const rlsExampleSchema = buildSchema(`
 `);
 
 // RLS Example Resolvers
-export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => ({
+export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, userId: string) => ({
   // Query resolvers
-  getRlsExamples: async (_: any, __: any, { userId }: RLSGraphQLContext) => {
-    console.log('Getting RLS examples for user:', userId, "with tx:", tx === undefined);
+  getRlsExamples: async (_: any, __: any, context: RLSGraphQLContext) => {
     try {
       const results = await tx.select().from(rlsExample).where(eq(rlsExample.userId, userId));
       
@@ -73,7 +72,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  getRlsExample: async (_: any, { id }: { id: string }, { userId }: RLSGraphQLContext) => {
+  getRlsExample: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const examples = await tx.select().from(rlsExample)
         .where(and(eq(rlsExample.id, id), eq(rlsExample.userId, userId)));
@@ -94,7 +93,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  getRlsComments: async (_: any, { parentExampleId }: { parentExampleId: string }, { userId }: RLSGraphQLContext) => {
+  getRlsComments: async (_: any, { parentExampleId }: { parentExampleId: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.select().from(rlsComment)
         .where(and(
@@ -113,7 +112,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
   },
 
   // Mutation resolvers
-  createRlsExample: async (_: any, { content }: { content: string }, { userId }: RLSGraphQLContext) => {
+  createRlsExample: async (_: any, { content }: { content: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.insert(rlsExample).values({
         id: newId('rlsExample'),
@@ -134,7 +133,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  updateRlsExample: async (_: any, { id, content }: { id: string; content: string }, { userId }: RLSGraphQLContext) => {
+  updateRlsExample: async (_: any, { id, content }: { id: string; content: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.update(rlsExample)
         .set({ content, updatedAt: new Date() })
@@ -154,7 +153,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  deleteRlsExample: async (_: any, { id }: { id: string }, { userId }: RLSGraphQLContext) => {
+  deleteRlsExample: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.delete(rlsExample)
         .where(and(eq(rlsExample.id, id), eq(rlsExample.userId, userId)))
@@ -166,7 +165,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  createRlsComment: async (_: any, { parentExampleId, text }: { parentExampleId: string; text: string }, { userId }: RLSGraphQLContext) => {
+  createRlsComment: async (_: any, { parentExampleId, text }: { parentExampleId: string; text: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.insert(rlsComment).values({
         id: newId('rlsComment'),
@@ -188,7 +187,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  updateRlsComment: async (_: any, { id, text }: { id: string; text: string }, { userId }: RLSGraphQLContext) => {
+  updateRlsComment: async (_: any, { id, text }: { id: string; text: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.update(rlsComment)
         .set({ text, updatedAt: new Date() })
@@ -208,7 +207,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
     }
   },
 
-  deleteRlsComment: async (_: any, { id }: { id: string }, { userId }: RLSGraphQLContext) => {
+  deleteRlsComment: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.delete(rlsComment)
         .where(and(eq(rlsComment.id, id), eq(rlsComment.userId, userId)))
@@ -221,7 +220,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
   },
 
   // Subscription resolvers
-  rlsExampleUpdates: async function* (_: any, __: any, { userId }: RLSGraphQLContext) {
+  rlsExampleUpdates: async function* (_: any, __: any, context: RLSGraphQLContext) {
     while (true) {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
@@ -256,7 +255,6 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>) => (
 const RlsExampleResolver = {
   RlsExample: {
     comments: async (parent: any, _: any, { loaders }: RLSGraphQLContext) => {
-      console.log('Fetching comments for example:', parent.id);
       return loaders.commentsLoader.load(parent.id);
     }
   }
@@ -267,9 +265,7 @@ export const executeRlsExampleGraphQLQuery = async (query: string, variables: an
   const document = parse(query);
   const rlsClient = createRLSClient(userId);
 
-    try {
   return await rlsClient.transaction(async (tx) => {
-    console.log('Executing RLS example GraphQL query for user:', userId, "with tx undefined == ", tx === undefined);
     const commentsLoader = new DataLoader(async (parentExampleIds: readonly string[]) => {
       const comments = await tx.select()
         .from(rlsComment)
@@ -291,11 +287,9 @@ export const executeRlsExampleGraphQLQuery = async (query: string, variables: an
       return parentExampleIds.map((id) => commentsByParentId[id] || []);
     });
 
-    const rootResolvers = createRlsExampleResolvers(tx);
+    const rootResolvers = createRlsExampleResolvers(tx, userId);
 
-    console.log('Executing RLS example GraphQL query for user:', userId, "with tx undefined == ", tx === undefined, "variables == ", variables);
     const variableValues = variables ?? {};
-    console.log('Variable values == ', variableValues);
     const resp = await execute({
       schema: rlsExampleSchema,
       document,
@@ -318,13 +312,8 @@ export const executeRlsExampleGraphQLQuery = async (query: string, variables: an
           return defaultFieldResolver(source, args, context, info);
         },
       });
-    console.log('Executed RLS example GraphQL query for user:', userId, "with tx undefined == ", tx === undefined);
     return resp;
   });
-    } catch (error) {
-      console.error('Error executing RLS example GraphQL query:', error);
-      throw error;
-    }
 };
 
 export const executeRlsExampleGraphQLSubscription = async (query: string, variables: any, userId: string) => {
@@ -357,7 +346,7 @@ export const executeRlsExampleGraphQLSubscription = async (query: string, variab
       return parentExampleIds.map((id) => commentsByParentId[id] || []);
     });
 
-    const rootResolvers = createRlsExampleResolvers(tx);
+    const rootResolvers = createRlsExampleResolvers(tx, userId);
 
     return await subscribe({
       schema: rlsExampleSchema,
