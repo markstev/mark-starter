@@ -110,6 +110,7 @@ app.post('/api/graphql/rls', auth(), async (c) => {
 
 // Add RLS Example GraphQL subscription endpoint (Server-Sent Events)
 app.get('/api/graphql/rls/stream', auth(), async (c) => {
+  // NOTE: THIS IS NOT TESTED YET!
   const { query, variables } = c.req.query();
   
   if (!query) {
@@ -119,7 +120,7 @@ app.get('/api/graphql/rls/stream', auth(), async (c) => {
   try {
     const result = await executeGraphQLSubscription(query as string, variables ? JSON.parse(variables as string) : {});
     
-    if (!result || typeof result[Symbol.asyncIterator] !== 'function') {
+    if (!result || !(Symbol.asyncIterator in result)) {
       return c.json({ error: 'Not a subscription query' }, 400);
     }
 

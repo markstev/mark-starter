@@ -9,9 +9,7 @@ export const featureFlagsRouter = router({
     .output(z.record(z.boolean()))
     .query(async ({ ctx }) => {
       const auth = getAuth(ctx as Context);
-      if (!auth?.userId) return {};
-      
-      const flagsMap = await getUserFeatureFlagsMap(auth.userId);
+      const flagsMap = await getUserFeatureFlagsMap(auth?.userId);
       return Object.fromEntries(flagsMap);
     }),
 
@@ -20,9 +18,7 @@ export const featureFlagsRouter = router({
     .output(z.boolean())
     .query(async ({ ctx, input }) => {
       const auth = getAuth(ctx as Context);
-      if (!auth?.userId) return false;
-      
-      const flagsMap = await getUserFeatureFlagsMap(auth.userId);
+      const flagsMap = await getUserFeatureFlagsMap(auth?.userId);
       return flagsMap.get(input.flagName) ?? false;
     }),
 }); 

@@ -7,7 +7,7 @@ import { featureFlags, userFeatureFlags, db } from "@repo/db";
  * @param flagName - The name of the feature flag
  * @returns Promise<boolean> - Whether the flag is enabled for the user
  */
-export async function isFlagEnabled(userId: string, flagName: string): Promise<boolean> {
+export async function isFlagEnabled(userId: string | null | undefined, flagName: string): Promise<boolean> {
   try {
     // First, get the feature flag details
     const flag = await db
@@ -22,7 +22,7 @@ export async function isFlagEnabled(userId: string, flagName: string): Promise<b
     }
     
     // Check if user has a specific override
-    const userFlag = await db
+    const userFlag = userId ? await db
       .select()
       .from(userFeatureFlags)
       .where(
@@ -31,7 +31,7 @@ export async function isFlagEnabled(userId: string, flagName: string): Promise<b
           eq(userFeatureFlags.featureFlagId, flag[0].id)
         )
       )
-      .limit(1);
+      .limit(1) : [];
     
     if (userFlag[0]) {
       // User has a specific setting, use it
@@ -52,7 +52,7 @@ export async function isFlagEnabled(userId: string, flagName: string): Promise<b
  * @param userId - The user ID to get flags for
  * @returns Promise<Array<{name: string, enabled: boolean, description: string}>>
  */
-export async function getUserFeatureFlags(userId: string): Promise<Array<{
+export async function getUserFeatureFlags(userId: string | null | undefined): Promise<Array<{
   name: string;
   enabled: boolean;
   description: string;
@@ -64,10 +64,10 @@ export async function getUserFeatureFlags(userId: string): Promise<Array<{
       .from(featureFlags);
     
     // Get user-specific overrides
-    const userFlags = await db
+    const userFlags = userId ? await db
       .select()
       .from(userFeatureFlags)
-      .where(eq(userFeatureFlags.userId, userId));
+      .where(eq(userFeatureFlags.userId, userId)) : [];
     
     // Create a map of user flag overrides
     const userFlagMap = new Map(
@@ -91,7 +91,7 @@ export async function getUserFeatureFlags(userId: string): Promise<Array<{
  * @param userId - The user ID to get flags for
  * @returns Promise<Map<string, boolean>> - Map of flag name to enabled state
  */
-export async function getUserFeatureFlagsMap(userId: string): Promise<Map<string, boolean>> {
+export async function getUserFeatureFlagsMap(userId: string | null | undefined): Promise<Map<string, boolean>> {
   try {
     const flags = await getUserFeatureFlags(userId);
     return new Map(flags.map(flag => [flag.name, flag.enabled]));

@@ -86,7 +86,7 @@ export function TimingCard({ children, name }: { children: React.ReactNode, name
 
   // Clone the child element and inject the `onDone` prop
   const childWithProp = React.isValidElement(child) 
-    ? React.cloneElement(child, { onDone: handleDone })
+    ? React.cloneElement(child as React.ReactElement<any>, { onDone: handleDone })
     : child;
 
   return (
