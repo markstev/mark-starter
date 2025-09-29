@@ -72,7 +72,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  getRlsExample: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
+  getRlsExample: async ({ id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const examples = await tx.select().from(rlsExample)
         .where(and(eq(rlsExample.id, id), eq(rlsExample.userId, userId)));
@@ -93,7 +93,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  getRlsComments: async (_: any, { parentExampleId }: { parentExampleId: string }, context: RLSGraphQLContext) => {
+  getRlsComments: async ({ parentExampleId }: { parentExampleId: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.select().from(rlsComment)
         .where(and(
@@ -112,7 +112,8 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
   },
 
   // Mutation resolvers
-  createRlsExample: async (_: any, { content }: { content: string }, context: RLSGraphQLContext) => {
+  createRlsExample: async ({ content }: { content: string }, context: RLSGraphQLContext) => {
+    console.log('Creating RLS example for user:', userId, "with content == ", content);
     try {
       const result = await tx.insert(rlsExample).values({
         id: newId('rlsExample'),
@@ -133,7 +134,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  updateRlsExample: async (_: any, { id, content }: { id: string; content: string }, context: RLSGraphQLContext) => {
+  updateRlsExample: async ({ id, content }: { id: string; content: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.update(rlsExample)
         .set({ content, updatedAt: new Date() })
@@ -153,7 +154,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  deleteRlsExample: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
+  deleteRlsExample: async ({ id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.delete(rlsExample)
         .where(and(eq(rlsExample.id, id), eq(rlsExample.userId, userId)))
@@ -165,7 +166,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  createRlsComment: async (_: any, { parentExampleId, text }: { parentExampleId: string; text: string }, context: RLSGraphQLContext) => {
+  createRlsComment: async ({ parentExampleId, text }: { parentExampleId: string; text: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.insert(rlsComment).values({
         id: newId('rlsComment'),
@@ -187,7 +188,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  updateRlsComment: async (_: any, { id, text }: { id: string; text: string }, context: RLSGraphQLContext) => {
+  updateRlsComment: async ({ id, text }: { id: string; text: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.update(rlsComment)
         .set({ text, updatedAt: new Date() })
@@ -207,7 +208,7 @@ export const createRlsExampleResolvers = (tx: PgTransaction<any, any, any>, user
     }
   },
 
-  deleteRlsComment: async (_: any, { id }: { id: string }, context: RLSGraphQLContext) => {
+  deleteRlsComment: async ({ id }: { id: string }, context: RLSGraphQLContext) => {
     try {
       const result = await tx.delete(rlsComment)
         .where(and(eq(rlsComment.id, id), eq(rlsComment.userId, userId)))
@@ -264,6 +265,8 @@ const RlsExampleResolver = {
 export const executeRlsExampleGraphQLQuery = async (query: string, variables: any, userId: string) => {
   const document = parse(query);
   const rlsClient = createRLSClient(userId);
+
+  console.log('Executing RLS example GraphQL query for user:', userId, "with variables == ", variables);
 
   return await rlsClient.transaction(async (tx) => {
     const commentsLoader = new DataLoader(async (parentExampleIds: readonly string[]) => {
