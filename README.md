@@ -23,6 +23,11 @@ Includes a variety of base features:
 - [Shadcn/ui](https://ui.shadcn.com/)
 - [Clerk](https://clerk.com/)
 
+### RPCs
+
+- This is primarily set up to use tRPC
+- I also have an example of graphql, in case you have non-typsecript clients to serve
+
 ### Deployment
 
 - [Vercel](https://vercel.com/)
