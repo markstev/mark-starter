@@ -110,6 +110,11 @@ DATABASE_URL=your_database_url
 - Copy your API keys to the .env file
 - Configure your OAuth providers if needed
 
+If you want to make an admin user (e.g. to control flags), go to the user on clerk.com and set the user public metadata to
+`{
+  "is_staff_admin": true
+}`
+
 #### Webhooks
 
 There is a webhook setup in clerk for the api to handle user creation and authentication.
