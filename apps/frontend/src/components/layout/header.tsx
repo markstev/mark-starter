@@ -7,7 +7,7 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,6 +59,7 @@ export function Header() {
           </nav>
           <div className="hidden items-center space-x-4 md:flex">
             <SignedIn>
+              <OrganizationSwitcher />
               <UserButton />
             </SignedIn>
             <SignedOut>
