@@ -31,7 +31,17 @@ command_exists() {
 
 # Function to check if a port is in use
 port_in_use() {
-    lsof -i :$1 >/dev/null 2>&1
+    local port=$1
+    if command -v ss >/dev/null 2>&1; then
+        ss -lnt | grep -q ":${port}\b"
+    elif command -v lsof >/dev/null 2>&1; then
+        lsof -i TCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1
+    elif command -v netstat >/dev/null 2>&1; then
+        netstat -lnt | grep -q ":${port}\b"
+    else
+        print_warning "Could not check port status, 'ss', 'lsof', or 'netstat' not found."
+        return 1
+    fi
 }
 
 echo -e "${BLUE}🚀 Welcome to B(build)stack Setup!${NC}"
@@ -106,13 +116,15 @@ print_status "Step 3: Setting up database schema..."
 
 cd packages/db
 print_status "Running 'pnpm db:push' to initialize database..."
-pnpm db:push
-if [ $? -eq 0 ]; then
-    print_success "Database schema pushed successfully"
-else
+output=$(pnpm db:push 2>&1)
+exit_code=$?
+echo "$output"
+if [ $exit_code -ne 0 ] || echo "$output" | grep -q "PostgresError:"; then
     print_error "Failed to push database schema"
     cd ../..
     exit 1
+else
+    print_success "Database schema pushed successfully"
 fi
 
 print_status "Database setup complete!"
