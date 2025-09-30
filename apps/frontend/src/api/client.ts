@@ -43,28 +43,6 @@ export const getApiClient = () => {
   }).api;
 };
 
-export const getServerClient = () => {
-  return hc<AppType>(getBaseUrl(), {
-    fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
-      const headers = new Headers(init?.headers);
-      const response = await fetch(input, {
-        ...init,
-        headers,
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new HTTPException(response.status as any, {
-          message: "Network response was not ok",
-        });
-      }
-
-      return response;
-    },
-  }).api;
-};
-
-
 const getWsUrl = () => {
   const url = process.env.NEXT_PUBLIC_WS_URL!;
   return url.replace(/^http/, 'ws').replace(":3004", ":3005");

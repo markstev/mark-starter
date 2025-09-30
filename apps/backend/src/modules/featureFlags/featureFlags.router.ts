@@ -1,7 +1,6 @@
-import { organizationProcedure, publicProcedure, router, staffProcedure } from "../../trpc";
+import { publicProcedure, router, staffProcedure } from "../../trpc";
 import { 
   getUserFeatureFlagsMap, 
-  setOrganizationFeatureFlag, 
   getFlagState,
   setFlag,
   removeUserFlag,
